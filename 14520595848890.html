@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  位操作 - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,232 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>位操作</h1>
 
+<p>对于网络、操作系统、嵌入式系统等职位的面试，位运算也是常见的题目类型之一。所谓的位运算，是指按二进制进行的运算。常见运算包括求反，与运算，或运算，异或运算及位移。关于位运算的真值表，请参考“工具箱”给出的链接。</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>在C/C++中，基本的位运算符总结如下，其中运算符优先级为从上到下递减，且&lt;&lt;，&gt;&gt;优先级相同：</p>
 
-		<p>出处</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center">操作符</th>
+<th style="text-align: center">功能</th>
+<th style="text-align: center">用法</th>
+</tr>
+</thead>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<tbody>
+<tr>
+<td style="text-align: center">~</td>
+<td style="text-align: center">位求反</td>
+<td style="text-align: center">~var</td>
+</tr>
+<tr>
+<td style="text-align: center">&lt;&lt;</td>
+<td style="text-align: center">左移(乘法)</td>
+<td style="text-align: center">var &lt;&lt; position</td>
+</tr>
+<tr>
+<td style="text-align: center">&gt;&gt;</td>
+<td style="text-align: center">右移(除法)</td>
+<td style="text-align: center">var &gt;&gt; position</td>
+</tr>
+<tr>
+<td style="text-align: center">&amp;</td>
+<td style="text-align: center">位与</td>
+<td style="text-align: center">var1 &amp; var2</td>
+</tr>
+<tr>
+<td style="text-align: center">^</td>
+<td style="text-align: center">位异或</td>
+<td style="text-align: center">var1 ^ var2</td>
+</tr>
+<tr>
+<td style="text-align: center">一条竖线</td>
+<td style="text-align: center">位或</td>
+<td style="text-align: center">var1 竖线 var2</td>
+</tr>
+</tbody>
+</table>
 
-<h2 id="toc_0">Solution</h2>
+<p>需要注意的是，位运算符只能用在带符号或无符号的char、short、int与long类型上。在实际应用中，建议用unsigned整型操作数，以免带符号操作数因为不同机器导致的结果不同：无符号数左移／右移默认移入的新比特是0。对于符号数，当最高位是1(代表负数)时，有的机器认为右移移入的新比特是1。此外，复杂的位运算建议都用括号强制计算顺序，而不是依赖于优先级，这样做可以增加可读性并避免错误。</p>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<p>用十六进制(hex)定义一个变量如下所示：</p>
+
+<pre><code>unsigned short value = 0xFFFF;
+</code></pre>
+
+<p>等价于二进制(binary)定义：</p>
+
+<pre><code>unsigned short value = 0b1111111111111111;
+</code></pre>
+
+<p>等价于十进制定义：</p>
+
+<pre><code>unsigned short value = 65535;
+</code></pre>
+
+<h2 id="toc_0">解题策略</h2>
+
+<h3 id="toc_1">基本的位运算</h3>
+
+<p>最基本的操作包括获取位、设置位和清除位。获取位可以利用&amp;1：&amp;(0x1 &lt;&lt; pos) ；设置位可以利用|1: | (0x1 &lt;&lt; pos) ；清除位可以利用&amp;0: &amp;(~(0x1 &lt;&lt; pos))。判断某位是否相同用<sup>：(A</sup> &amp; (0x1 &lt;&lt; pos)) ^ (B &amp; (0x1 &lt;&lt; pos))。</p>
+
+<h3 id="toc_2">位掩码</h3>
+
+<p>选择合适的位掩码(bit mask)，然后与给定的二进制数进行基本位操作。而掩码，通常可以通过对~0，1 进行基本操作和加减法得到。例如，我们要构造一个第i到第j位为0，其他位为1的位掩码，则可以对~0进行左移操作获得形如111…0000的mask，再对~0进行右移操作，获得形如000…111的mask，最后通过位或(此处相当于相加)得到最终的位掩码。</p>
+
+<p>在寻求得到一个特定的掩码时，还是利用最基本的获取位、设置位或清除位得到所需掩码的形态。另外，应当尽可能避免直接出现常数，比如使用32-i这样的情况(这里默认想要操作一个32bit的整型)，而应当定义一个意义明确的宏，以提高可读性：<code>#define INT_BIT_LENTH (32)</code>。</p>
+
+<h2 id="toc_3">XOR 异或</h2>
+
+<blockquote>
+<p>异或：相同为0，不同为1。也可用「不进位加法」来理解。</p>
+</blockquote>
+
+<p>异或操作的一些特点：</p>
+
+<pre><code>x ^ 0 = x
+x ^ 1s = ~x // 1s = ~0
+x ^ (~x) = 1s
+x ^ x = 0 // interesting and important!
+a ^ b = c =&gt; a ^ c = b, b ^ c = a // swap
+a ^ b ^ c = a ^ (b ^ c) = (a ^ b) ^ c // associative
+</code></pre>
+
+<h2 id="toc_4">移位操作</h2>
+
+<p>移位操作可近似为乘以/除以2的幂。0b0010 * 0b0110等价于0b0110 &lt;&lt; 2. 下面是一些常见的移位组合操作。</p>
 
 <ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
+<li>将x最右边的n位清零 <code>x &amp; (~0 &lt;&lt; n)</code></li>
+<li>获取x的第n位值(0或者1) <code>x &amp; (1 &lt;&lt; n)</code></li>
+<li>获取x的第n位的幂值 <code>(x &gt;&gt; n) &amp; 1</code></li>
+<li>仅将第n位置为1 <code>x | (1 &lt;&lt; n)</code></li>
+<li>仅将第n位置为0 <code>x &amp; (~(1 &lt;&lt; n))</code></li>
+<li>将x最高位至第n位(含)清零 <code>x &amp; ((1 &lt;&lt; n) - 1)</code></li>
+<li>将第n位至第0位(含)清零 <code>x &amp; (~((1 &lt;&lt; (n + 1)) - 1))</code></li>
+<li>仅更新第n位，写入值为v; v为1则更新为1，否则为0 <code>mask = ~(1 &lt;&lt; n); x = (x &amp; mask) | (v &lt;&lt; i)</code></li>
 </ol>
 
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<hr/>
 
-<h2 id="toc_1">Complexity</h2>
+<ul>
+<li>Two&#39;s Complement - 负数可以看作是最高位的 1 为负，其他位为正，相加得到最后的值
 
-<p>时间复杂度 O(n)</p>
+<ul>
+<li>例如 -1 = (1111) 最高位的 1 表示 -8， 剩下三位等于 7，相加后等于 -1</li>
+</ul></li>
+<li>logical right shift - put a <code>0</code> in the most significant bit - <code>&gt;&gt;&gt;</code></li>
+<li>arithmetic right shift - put a <code>1</code> in the most significant bit - <code>&gt;&gt;</code></li>
+</ul>
 
-<h2 id="toc_2">Code</h2>
+<h2 id="toc_5">Get Bit</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
-    }
-    
-    return backup.next;
+<p>Shifts 1 over by <code>i</code> bits, creating a value that looks like <code>00010000</code>. AND operation</p>
+
+<pre><code>boolean getBit(int num, int i){
+    return ((num &amp; (1 &lt;&lt; i)) != 0);
 }
 </code></pre>
 
-
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+<h2 id="toc_6">Set Bit</h2>
+
+<p>Shifts 1 over by <code>i</code> bits, creating a value like <code>00010000</code>. OR operation</p>
+
+<pre><code>int setBit(int num, int i){
+    return num | (1 &lt;&lt; i);
+}
+</code></pre>
+
+<h2 id="toc_7">Clear Bit</h2>
+
+<p>Create a number like <code>11101111</code> by creating the reverse of it (<code>00010000</code>). AND operation.</p>
+
+<pre><code>int clearBit(int num, int i){
+    int mask = ~(1 &lt;&lt; i);
+    return num &amp; mask;
+}
+</code></pre>
+
+<p>To clear all bits from the most significant bit through <code>i</code> (inclusive), we create a mask with a <code>1</code> at the ith bit(1 &lt;&lt; i). Then we subtract 1 from it, giving us a sequence of 0s followed by i 1s. AND operation.</p>
+
+<pre><code>int clearBitsMSBthroughI(int num, int i){
+    int mask = (1 &lt;&lt; i) - 1;
+    return num &amp; mask;
+}
+</code></pre>
+
+<p>To clear bits from i through 0 (inclusive), we take a sequence of 1s (which is -1) and shift it over by 31 - i bits.</p>
+
+<pre><code>int clearBitsIthrough0(int num, int i){
+    int mask = ~(-1 &gt;&gt;&gt; (31 - i));
+    return num &amp; mask;
+}
+</code></pre>
+
+<h2 id="toc_8">Update Bit</h2>
+
+<p>Set the ith bit to a value <code>v</code></p>
+
+<pre><code>int updateBit(int num, int i, boolean bitIs1){
+    int value = bitIs1 ? 1 : 0;
+    int mask = ~(1 &lt;&lt; i);
+    return (num &amp; mask) | (value &lt;&lt; i);
+}
+</code></pre>
+
+<h2 id="toc_9">工具箱</h2>
+
+<h3 id="toc_10">位运算的定义</h3>
+
+<p><a href="http://en.wikipedia.org/wiki/Bitwise_operation">参考链接</a>  给出的位运算定义。</p>
+
+<h3 id="toc_11">关于位运算的深入讨论</h3>
+
+<p>请参考<a href="http://graphics.stanford.edu/%7Eseander/bithacks.html#CountBitsSetTable">链接</a></p>
+
+
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520596468418.html"  title="Previous Post: A Plus B">&laquo; A Plus B</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595481874.html" 
+	        title="Next Post: ZigZag Conversion">ZigZag Conversion &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595848890.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Add Two Numbers - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,27 +661,21 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Add Two Numbers</h1>
 
+<p>出处</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>Given two linked lists, each element of the lists is a integer. Write a function to return a new list, which is the “sum” of the given two lists.</p>
 
-		<p>出处</p>
-
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<ul>
+<li>Part a. Given input (7-&gt;1-&gt;6) + (5-&gt;9-&gt;2), output 2-&gt;1-&gt;9. </li>
+<li>Part b. Given input (6-&gt;1-&gt;7) + (2-&gt;9-&gt;5), output 9-&gt;1-&gt;2.</li>
+</ul>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
-
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<p>对于a，靠前节点的解不依赖靠后节点，因此顺序遍历求解即可。对于b，靠前节点的解依赖于靠后节点(进位)，因此必须用递归或栈处理。并且，子问题返回的结果，可以是一个自定义的结构(进位 + sub-list)。当然，对于问题b，也可以通过逆向列表之后再用a的解法求解。同时，注意到该题还是处理两个链表的问题，所以可以先处理常规情况(两个链表都有剩下节点)，再处理边界情况(其中一个链表已经遍历完毕)。</p>
 
 <h2 id="toc_1">Complexity</h2>
 
@@ -689,444 +683,141 @@
 
 <h2 id="toc_2">Code</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
-    }
-    
-    return backup.next;
+<p>For part a</p>
+
+<pre><code class="language-java">Node addList(Node head1, Node head2){
+    Node head = new Node(-1);
+   int num1 = 0, count1 = 0;
+   int num2 = 0, count2 = 0;
+   int result = 0;
+
+   while (head1 != null){
+       num1 += head1.data * Math.pow(10,count1);
+       count1++;
+       head1 = head1.next;
+   }
+
+   while (head2 != null){
+       num2 += head2.data * Math.pow(10,count2);
+       count2++;
+       head2 = head2.next;
+   }
+   result = num1 + num2;
+
+   Node cur = head;
+
+   while(result &gt; 0){
+       cur.next = new Node(result % 10);
+       cur = cur.next;
+       result /= 10;
+   }
+
+   return head.next;
 }
 </code></pre>
 
-
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+<hr/>
+
+<p>For part b</p>
+
+<pre><code class="language-java">Node addList(Node head1, Node head2){
+   Node head = new Node(-1);
+   int num1 = 0, count1 = 0;
+   int num2 = 0, count2 = 0;
+   int result = 0;
+
+   while (head1 != null){
+       num1 = num1 * 10 + head1.data;
+       count1++;
+       head1 = head1.next;
+   }
+
+   while (head2 != null){
+       num2 = num2 * 10 + head2.data;
+       count2++;
+       head2 = head2.next;
+   }
+   result = num1 + num2;
+
+   Node cur = head;
+
+   while(result &gt; 0){
+       Node temp = new Node(result % 10);
+       temp.next = cur.next;
+       cur.next = temp;
+       result /= 10;
+   }
+
+   return head.next;
+}
+</code></pre>
+
+<hr/>
+
+<p>cpp version</p>
+
+<pre><code class="language-cpp">class Solution {
+public:
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+        ListNode *dummy = new ListNode(0), *p = dummy;
+        int carry = 0;
+        while(l1 || l2 || carry) {
+            if(l1) {
+                carry+=l1-&gt;val;
+                l1 = l1-&gt;next;
+            }
+            if(l2) {
+                carry+=l2-&gt;val;
+                l2 = l2-&gt;next;
+            }
+            p-&gt;next = new ListNode(carry%10);
+            carry /= 10;
+            p = p-&gt;next;
+        }
+        return dummy-&gt;next;
+    }
+};
+</code></pre>
+
+
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520597850832.html"  title="Previous Post: Check Cycle">&laquo; Check Cycle</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520597319260.html" 
+	        title="Next Post: 树和图">树和图 &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520597850789.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

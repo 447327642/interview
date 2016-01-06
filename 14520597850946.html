@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Copy List with Random Pointer - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,162 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Copy List with Random Pointer</h1>
 
+<p>A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
-
-		<p>出处</p>
-
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>Return a deep copy of the list.</p>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
-
 <ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
+<li>HashMap</li>
+<li>uses constant extra space.</li>
+<li>Recursive. (Stack)--&gt;StackOverflow in Java.</li>
+<li>Iterative. </li>
 </ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
 
 <h2 id="toc_1">Complexity</h2>
 
-<p>时间复杂度 O(n)</p>
+<p>时间复杂度 O(n)，空间复杂度 O(n)</p>
 
 <h2 id="toc_2">Code</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">public class Solution {
+    public RandomListNode copyRandomList_1(RandomListNode head) {
+        if (head == null) return null;
+        HashMap&lt;RandomListNode, RandomListNode&gt; map = new HashMap&lt;RandomListNode, RandomListNode&gt;();
+        RandomListNode dummy = new RandomListNode(-1);
+        RandomListNode curNew = dummy, cur = head;
+        while (cur != null) {
+            if (map.containsKey(cur) == false) {
+                map.put(cur, new RandomListNode(cur.label));
+            }
+            if (cur.random != null &amp;&amp; map.containsKey(cur.random) == false) {
+                map.put(cur.random, new RandomListNode(cur.random.label));
+            }
+            curNew.next = map.get(cur);
+            curNew.next.random = map.get(cur.random);
+            curNew = curNew.next;
+            cur = cur.next;
+        }
+        return dummy.next;
     }
     
-    return backup.next;
+    
+    public RandomListNode copyRandomList_2(RandomListNode head) {
+        if (head == null) return null;
+        RandomListNode cur = head;
+        while (cur != null) {
+            RandomListNode newnode = new RandomListNode(cur.label);
+            newnode.next = cur.next;
+            cur.next = newnode;
+            cur = cur.next.next;
+        }
+        cur = head;
+        while (cur != null) {
+            if (cur.random != null) {
+                cur.next.random = cur.random.next;
+            }
+            cur = cur.next.next;
+        }
+        RandomListNode dummy = new RandomListNode(-1);
+        RandomListNode curNew = dummy;
+        cur = head;
+        while (cur != null) {
+            curNew.next = cur.next;
+            curNew = curNew.next;
+            cur.next = cur.next.next;
+            cur = cur.next;
+        }
+        return dummy.next;
+    }
+    
+    
+    public RandomListNode copyRandomList_3(RandomListNode head) {/*StackOverflowError*/
+        if (head == null) return null;
+        HashMap&lt;RandomListNode, RandomListNode&gt; map = new HashMap&lt;RandomListNode, RandomListNode&gt;();
+        return copy(head, map);
+    }
+    public RandomListNode copy(RandomListNode root, HashMap&lt;RandomListNode, RandomListNode&gt; map) {
+        if (root == null) return null;
+        if (map.containsKey(root) == true) {
+            return map.get(root);
+        }
+        RandomListNode newnode = new RandomListNode(root.label);
+        map.put(root, newnode);
+        newnode.next = copy(root.next, map);
+        newnode.random = copy(root.random, map);
+        return newnode;
+    }
+    
+    
+    public RandomListNode copyRandomList_4(RandomListNode head) {
+        if (head == null) return null;
+        HashMap&lt;RandomListNode, RandomListNode&gt; map = new HashMap&lt;RandomListNode, RandomListNode&gt;();
+        Queue&lt;RandomListNode&gt; queue = new LinkedList&lt;RandomListNode&gt;();
+        queue.offer(head);
+        map.put(head, new RandomListNode(head.label));
+        while (queue.isEmpty() == false) {
+            RandomListNode cur = queue.poll();
+            if (cur.next != null &amp;&amp; map.containsKey(cur.next) == false) {
+                RandomListNode newnode = new RandomListNode(cur.next.label);
+                map.put(cur.next, newnode);
+                queue.offer(cur.next);
+            }
+            map.get(cur).next = map.get(cur.next);
+            if (cur.random != null &amp;&amp; map.containsKey(cur.random) == false) {
+                RandomListNode newnode = new RandomListNode(cur.random.label);
+                map.put(cur.random, newnode);
+                queue.offer(cur.random);
+            }
+            map.get(cur).random = map.get(cur.random);
+        }
+        return map.get(head);
+    }
 }
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520597850990.html"  title="Previous Post: Insertion Sort List">&laquo; Insertion Sort List</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520597850907.html" 
+	        title="Next Post: Palindrome Linked List">Palindrome Linked List &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520597850946.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

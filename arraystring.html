@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  数组和字符串 - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -666,199 +666,48 @@
 
 	
 		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+		<h1>ZigZag Conversion</h1>
 
-		<p>出处</p>
+		<p>The string <q>PAYPALISHIRING</q> is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)</p>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<pre><code>P   A   H   N
+A P L S I I G
+Y   I   R
+</code></pre>
+
+<p>And then read line by line: <q>PAHNAPLSIIGYIR</q></p>
+
+<p>Write the code that will take a string and make this conversion given a number of rows:</p>
+
+<pre><code>string convert(string text, int nRows);
+</code></pre>
+
+<p>convert(<q>PAYPALISHIRING</q>, 3) should return <q>PAHNAPLSIIGYIR</q>.</p>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<p>找规律题目</p>
 
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
-
-<h2 id="toc_1">Complexity</h2>
-
-<p>时间复杂度 O(n)</p>
-
-<h2 id="toc_2">Code</h2>
-
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">public class Solution {
+    public String convert(String s, int numRows) {
+        int n = s.length();
+        if (n &lt;= 1 || numRows &lt;= 1) return s;
+        StringBuffer res = new StringBuffer();
+        for (int i = 0; i &lt; numRows; ++i) {
+            for (int j = 0; j + i &lt; n; j += 2*numRows - 2) {
+                res.append(s.charAt(j+i));
+                if (i == 0 || i == numRows - 1) continue;
+                if (j + 2*numRows - 2 - i &lt; n) 
+                    res.append(s.charAt(j + 2*numRows - 2 - i));
+            }
+        }
+        return res.toString();
     }
-    
-    return backup.next;
 }
 </code></pre>
 
 
 		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
 	
 
  

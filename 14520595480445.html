@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  String Compression - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,92 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>String Compression</h1>
 
-
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
-
-		<p>出处</p>
-
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>Implement a method to perform basic string compression using the counts of repeated characters. For example, the string aabcccccaaa would become a2b1c5a3. If the <q>compressed</q> string would not become smaller than the original string, your method should return the original string. You can assum the string has only uppercase and lowercase letters(a-z)</p>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<pre><code class="language-java">/**
+ * check the length of the new string in the first place and then build
+ * the new string with stringBuilder(if needed)
+ */
+public static String compressString(String str){
+    StringBuilder compressed = new StringBuilder(str.length());
+    int count = 0;
 
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
-
-<h2 id="toc_1">Complexity</h2>
-
-<p>时间复杂度 O(n)</p>
-
-<h2 id="toc_2">Code</h2>
-
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+    for (int i = 0; i &lt; str.length(); i++){
+        count++;
+        if (i+1 == str.length() || str.charAt(i) != str.charAt(i+1)){
+            compressed.append(str.charAt(i));
+            compressed.append(count);
+            count = 0;
+        }
     }
-    
-    return backup.next;
+
+    if (compressed.toString().length() &gt;= str.length()){
+        return str;
+    }
+
+    return compressed.toString();
+}
+
+public static int countLength(String str){
+    int compressedLength = 0;
+    int countConsecutive = 0;
+    for (int i = 0; i &lt; str.length(); i++){
+        countConsecutive++;
+        if (i + 1 == str.length() || str.charAt(i) != str.charAt(i+1)){
+            compressedLength += 1
+                    + String.valueOf(countConsecutive).length();
+            countConsecutive = 0;
+        }
+    }
+
+    return compressedLength;
 }
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595480652.html"  title="Previous Post: Implement strStr()">&laquo; Implement strStr()</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595480211.html" 
+	        title="Next Post: String Composition">String Composition &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595480445.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

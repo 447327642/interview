@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  K Sum II - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,99 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>K Sum II</h1>
 
+<p>给定 n 个不同的正整数，整数 k（1&lt;= k &lt;= n）以及一个目标数字。　　　　</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>在这 n 个数里面找出 K 个数，使得这 K 个数的和等于目标数字，你需要找出所有满足要求的方案。</p>
 
-		<p>出处</p>
+<p>样例</p>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<pre><code>给出[1,2,3,4]，k=2， target=5，返回 [[1,4],[2,3]]
+</code></pre>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
-
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<p>同Combination Sum II</p>
 
 <h2 id="toc_1">Complexity</h2>
 
-<p>时间复杂度 O(n)</p>
+<p>时间复杂度 O(2<sup>n</sup> )</p>
 
 <h2 id="toc_2">Code</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">public class Solution {
+    /**
+     * @param A: an integer array.
+     * @param k: a positive integer (k &lt;= length(A))
+     * @param target: a integer
+     * @return a list of lists of integer
+     */
+    public ArrayList&lt;ArrayList&lt;Integer&gt;&gt; kSumII(int A[], int k, int target) {
+        ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res = new ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();
+        ArrayList&lt;Integer&gt; path = new ArrayList&lt;Integer&gt;();
+        helper(res, path, A, k, target, 0);
+        return res;
     }
-    
-    return backup.next;
+
+    public void helper(ArrayList&lt;ArrayList&lt;Integer&gt;&gt; res, ArrayList&lt;Integer&gt; path, int[] A, int k, int remain, int index) {
+        if (path.size() == k) {
+            if (remain == 0) {
+                res.add(new ArrayList&lt;Integer&gt;(path));
+            }
+            return;
+        }
+        for (int i=index; i&lt;A.length; i++) {
+            path.add(A[i]);
+            helper(res, path, A, k, remain-A[i], i+1);
+            path.remove(path.size()-1);
+        }
+    }
 }
+
+
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595472329.html"  title="Previous Post: Largest Number">&laquo; Largest Number</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595472084.html" 
+	        title="Next Post: Isomorphic Strings">Isomorphic Strings &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595472209.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

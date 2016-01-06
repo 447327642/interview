@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Min Triangle Path Sum - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,101 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Min Triangle Path Sum</h1>
 
+<p>给定一个数字三角形，找到从顶部到底部的最小路径和。每一步可以移动到下面一行的相邻数字上。</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>样例</p>
 
-		<p>出处</p>
+<pre><code>比如，给出下列数字三角形：
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+从顶到底部的最小路径和为11 ( 2 + 3 + 5 + 1 = 11)。
+</code></pre>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>注意</p>
+
+<pre><code>如果你只用额外空间复杂度O(n)的条件下完成可以获得加分，其中n是数字三角形的总行数。
+</code></pre>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<p>It’s an easy question. Instead of normal DP transition function, this one is so-called bottom-up approach.</p>
 
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
+<p>其实就是包括所有情况的累加，逐层分析就可以明白，其中 <code>m[0]</code> 指的是最左边元素的和，<code>m[j]</code> 是最右边元素的和，中间的通过比较选最小值</p>
 
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<h2 id="toc_1">Code</h2>
 
-<h2 id="toc_1">Complexity</h2>
-
-<p>时间复杂度 O(n)</p>
-
-<h2 id="toc_2">Code</h2>
-
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">public class Solution {
+    /**
+     * @param triangle: a list of lists of integers.
+     * @return: An integer, minimum path sum.
+     */
+    public int minimumTotal(ArrayList&lt;ArrayList&lt;Integer&gt;&gt; triangle) {
+        int len = triangle.size();
+        if (len == 0) return 0;
+        int[] m = new int[len];
+        m[0] = triangle.get(0).get(0);
+        for (int i = 1; i &lt; len; i ++) {
+            ArrayList&lt;Integer&gt; cur = triangle.get(i);
+            for (int j = i; j &gt;= 0; j --) {
+                if (j == i) m[j] = m[j-1] + cur.get(j);
+                else if (j == 0) m[j] = m[0] + cur.get(0);
+                else m[j] = Math.min(m[j-1], m[j]) + cur.get(j);
+            }
+        }
+        int min = Integer.MAX_VALUE;
+        for (Integer k: m)
+            min = Math.min(min, k);
+        return min;
     }
-    
-    return backup.next;
 }
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595474770.html"  title="Previous Post: Modify String">&laquo; Modify String</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595474431.html" 
+	        title="Next Post: Min Difference 2 Array">Min Difference 2 Array &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595474607.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

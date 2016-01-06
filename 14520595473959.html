@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Merge Range - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,159 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Merge Range</h1>
 
+<p>出处 Insert Interval</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>给出若干闭合区间，合并所有重叠的部分。</p>
 
-		<p>出处</p>
+<p>You may assume that the intervals were initially sorted according to their start times.</p>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>Example 1:</p>
+
+<p>Given intervals [1,3],[6,9], insert and merge [2,5] in as [1,5],[6,9].</p>
+
+<p>Example 2:</p>
+
+<p>Given [1,2],[3,5],[6,7],[8,10],[12,16], insert and merge [4,9] in as [1,2],[3,10],[12,16].</p>
+
+<p>This is because the new interval [4,9] overlaps with [3,5],[6,7],[8,10].</p>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<p>To check the intersections between interval [a,b] and [c,d],  there are four cases (equal not shown in the figures):</p>
+
+<pre><code>    a____b
+c____d
+
+a____b
+     c____d
+
+a_______b
+    c___d
+
+   a___b
+c_______d
+</code></pre>
+
+<p>But we can simplify these into 2 cases when check the smaller (smaller start point) interval with the bigger interval.</p>
+
+<p>For the problem, the idea is simple. First sort the vector according to the start value. Second, scan every interval, if it can be merged to the previous one, then merge them, else push it into the result vector.</p>
+
+<hr/>
 
 <ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
+<li>compare [1,2] with [4,9], then insert [1,2];</li>
+<li>merge [3,5] with [4,9], get newInterval = [3,9];</li>
+<li>merge [6,7] with [3,9], get newInterval = [3,9];</li>
+<li>merge [8,10] with [3,9], get newInterval = [3,10];</li>
+<li>compare [12,16] with [3,10], insert newInterval [3,10], then all the remaining intervals...</li>
 </ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
 
 <h2 id="toc_1">Complexity</h2>
 
-<p>时间复杂度 O(n)</p>
+<p>时间复杂度 O(n)，空间复杂度 O(1)</p>
 
 <h2 id="toc_2">Code</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<ul>
+<li>Solution 1 : Time O(N).</li>
+<li>Solution 2 : Time O(Log(N)).</li>
+</ul>
+
+<pre><code class="language-java">public List&lt;Interval&gt; insert_1(List&lt;Interval&gt; intervals, Interval newInterval) {
+        List&lt;Interval&gt; res = new ArrayList&lt;Interval&gt;();
+        boolean inserted = false;
+        for (Interval it : intervals) {
+            if (inserted || it.end &lt; newInterval.start) {
+                res.add(it);
+            } else if (it.start &gt; newInterval.end) {
+                res.add(newInterval);
+                res.add(it);
+                inserted = true;
+            } else {
+                newInterval.start = Math.min(newInterval.start, it.start);
+                newInterval.end = Math.max(newInterval.end, it.end);
+            }
+        }
+        if (inserted == false) res.add(newInterval);
+        return res;
     }
     
-    return backup.next;
-}
+    public List&lt;Interval&gt; insert(List&lt;Interval&gt; intervals, Interval newInterval) {
+        List&lt;Interval&gt; res = new ArrayList&lt;Interval&gt;();
+        int n = intervals.size();
+        int left = 0, right = n - 1;
+        while (left &lt;= right) {
+            int mid = left + (right - left) / 2;
+            if (intervals.get(mid).start &gt; newInterval.start) right = mid - 1;
+            else left = mid + 1;
+        }
+        int idxStart = right;
+        left = 0; right = n - 1;
+        while (left &lt;= right) {
+            int mid = left + (right - left) / 2;
+            if (intervals.get(mid).end &lt; newInterval.end) left = mid + 1;
+            else right = mid - 1;
+        }
+        int idxEnd = left;
+        if (idxStart &gt;= 0 &amp;&amp; newInterval.start &lt;= intervals.get(idxStart).end) {
+            newInterval.start = intervals.get(idxStart--).start;
+        }
+        if (idxEnd &lt; n &amp;&amp; newInterval.end &gt;= intervals.get(idxEnd).start) {
+            newInterval.end = intervals.get(idxEnd++).end;
+        }
+        for (int i = 0; i &lt;= idxStart; ++i) {
+            res.add(intervals.get(i));
+        }
+        res.add(newInterval);
+        for (int i = idxEnd; i &lt; n; ++i) {
+            res.add(intervals.get(i));
+        }
+        return res;
+    }
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595474103.html"  title="Previous Post: Sorted Two Sorted Array II">&laquo; Sorted Two Sorted Array II</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595473794.html" 
+	        title="Next Post: Median of Unsorted Array">Median of Unsorted Array &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595473959.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

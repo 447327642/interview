@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Rotate String - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,131 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Rotate String</h1>
 
+<p>给定一个字符串，要求把字符串前面的若干个字符移动到字符串的尾部，如把字符串 <code>abcdef</code>前面的<code>2</code>个字符<code>a</code>和<code>b</code>移动到字符串的尾部，使得原字符串变成字符串<code>cdefab</code>。请写一个函数完成此功能，要求对长度为<code>n</code>的字符串操作的时间复杂度为<code>O(n)</code>，空间复杂度为<code>O(1)</code>。</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<h2 id="toc_0">分析与解法</h2>
 
-		<p>出处</p>
+<h3 id="toc_1">解法一：暴力移位法</h3>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>初看此题，可能最先想到的方法是按照题目所要求的，把需要移动的字符一个一个地移动到字符串的尾部，如此我们可以实现一个函数<code>LeftShiftOne(char* s, int n)</code>，以完成移动一个字符到字符串尾部的功能，代码如下所示：</p>
 
-<h2 id="toc_0">Solution</h2>
-
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
-
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
-
-<h2 id="toc_1">Complexity</h2>
-
-<p>时间复杂度 O(n)</p>
-
-<h2 id="toc_2">Code</h2>
-
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-cpp">void LeftShiftOne(char* s, int n)
+{
+    char t = s[0];  //保存第一个字符
+    for (int i = 1; i &lt; n; i++)
+    {
+        s[i - 1] = s[i];
     }
-    
-    return backup.next;
+    s[n - 1] = t;
 }
 </code></pre>
 
-
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+<p>因此，若要把字符串开头的m个字符移动到字符串的尾部，则可以如下操作：</p>
+
+<pre><code class="language-cpp">void LeftRotateString(char* s, int n, int m)
+{
+    while (m--)
+    {
+        LeftShiftOne(s, n);
+    }
+}
+</code></pre>
+
+<p>下面，我们来分析一下这种方法的时间复杂度和空间复杂度。</p>
+
+<p>针对长度为n的字符串来说，假设需要移动m个字符到字符串的尾部，那么总共需要 <code>m*n</code> 次操作，同时设立一个变量保存第一个字符，如此，时间复杂度为<code>O(m*n)</code>，空间复杂度为<code>O(1)</code>，空间复杂度符合题目要求，但时间复杂度不符合，所以，我们得需要寻找其他更好的办法来降低时间复杂度。</p>
+
+<h2 id="toc_2">解法二：三步反转法</h2>
+
+<p>对于这个问题，换一个角度思考一下。</p>
+
+<p>将一个字符串分成<code>X</code>和<code>Y</code>两个部分，在每部分字符串上定义反转操作，如<code>X^T</code>，即把<code>X</code>的所有字符反转（如，<code>X=&quot;abc&quot;</code>，那么<code>X^T=&quot;cba&quot;</code>），那么就得到下面的结论：<code>(X^TY^T)^T=YX</code>，显然就解决了字符串的反转问题。</p>
+
+<p>例如，字符串<code>abcdef</code>，若要让<code>def</code>翻转到<code>abc</code>的前头，只要按照下述3个步骤操作即可：</p>
+
+<ul>
+<li>首先将原字符串分为两个部分，即<code>X:abc</code>，<code>Y:def</code>；</li>
+<li>将<code>X</code>反转，<code>X-&gt;X^T</code>，即得：<code>abc-&gt;cba</code>；将<code>Y</code>反转，<code>Y-&gt;Y^T</code>，即得：<code>def-&gt;fed</code>。</li>
+<li>反转上述步骤得到的结果字符串<code>X^TY^T</code>，即反转字符串<code>cbafed</code>的两部分（<code>cba</code>和<code>fed</code>）给予反转，<code>cbafed</code>得到<code>defabc</code>，形式化表示为<code>(X^TY^T)^T=YX</code>，这就实现了整个反转。</li>
+</ul>
+
+<p>代码则可以这么写：</p>
+
+<pre><code class="language-cpp">void ReverseString(char* s,int from,int to)
+{
+    while (from &lt; to)
+    {
+        char t = s[from];
+        s[from++] = s[to];
+        s[to--] = t;
+    }
+}
+
+void LeftRotateString(char* s,int n,int m)
+{
+    //若要左移动大于n位，那么和%n 是等价的
+    m %= n;     
+    //反转[0..m - 1]，套用到上面举的例子中，就是X-&gt;X^T，即 abc-&gt;cba
+    ReverseString(s, 0, m - 1); 
+    //反转[m..n - 1]，例如Y-&gt;Y^T，即 def-&gt;fed
+    ReverseString(s, m, n - 1); 
+    //反转[0..n - 1]，即如整个反转，(X^TY^T)^T=YX，即 cbafed-&gt;defabc。
+    ReverseString(s, 0, n - 1); 
+}
+</code></pre>
+
+<p>这就是把字符串分为两个部分，先各自反转再整体反转的方法，时间复杂度为O(n)，空间复杂度为O(1)，达到了题目的要求。</p>
+
+<h2 id="toc_3">举一反三</h2>
+
+<ol>
+<li>链表翻转。给出一个链表和一个数<code>k</code>，比如，链表为<code>1→2→3→4→5→6</code>，<code>k=2</code>，则翻转后<code>2→1→6→5→4→3</code>，若<code>k=3</code>，翻转后<code>3→2→1→6→5→4</code>，若<code>k=4</code>，翻转后<code>4→3→2→1→6→5</code>，用程序实现。</li>
+<li>编写程序，在原字符串中把字符串尾部的<code>m</code>个字符移动到字符串的头部，要求：长度为<code>n</code>的字符串操作时间复杂度为<code>O(n)</code>，空间复杂度为<code>O(1)</code>。 例如，原字符串为<code>Ilovebaofeng</code>，<code>m=7</code>，输出结果为：<code>baofengIlove</code>。</li>
+<li>单词翻转。输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变，句子中单词以空格符隔开。为简单起见，标点符号和普通字母一样处理。例如，输入<code>I am a student.</code>，则输出<code>student. a am I</code>。</li>
+</ol>
+
+
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595478736.html"  title="Previous Post: 01 相等的串">&laquo; 01 相等的串</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595478302.html" 
+	        title="Next Post: Rotate Image">Rotate Image &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595478523.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

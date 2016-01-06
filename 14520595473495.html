@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Matrix ZigZag Traversal - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,150 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Matrix ZigZag Traversal</h1>
 
+<p>给你一个包含 m x n 个元素的矩阵 (m 行, n 列), 求该矩阵的之字型遍历。</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>样例</p>
 
-		<p>出处</p>
+<p>对于如下矩阵：</p>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<pre><code>[
+  [1, 2,  3,  4],
+  [5, 6,  7,  8],
+  [9,10, 11, 12]
+]
+返回 [1, 2, 5, 9, 6, 3, 4, 7, 10, 11, 8, 12]
+</code></pre>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
-
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<p>注意越界问题</p>
 
 <h2 id="toc_1">Complexity</h2>
 
-<p>时间复杂度 O(n)</p>
+<p>时间复杂度 O(n<sup>2</sup> )，空间复杂度 O(1)</p>
 
 <h2 id="toc_2">Code</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">// java
+public class Solution {
+    /**
+     * @param matrix: a matrix of integers
+     * @return: an array of integers
+     */ 
+    public int[] printZMatrix(int[][] matrix) {
+        if(matrix == null || matrix.length == 0 || matrix[0].length == 0) return null;
+        int count = matrix.length * matrix[0].length;
+        int[] array = new int[count];
+        int r = 0, c = 0;
+        array[0] = matrix[0][0];
+        for (int i = 1; i &lt; count; ) {
+            //斜上走到顶
+            while(i &lt; count &amp;&amp; r - 1 &gt;= 0 &amp;&amp; c + 1 &lt; matrix[0].length) {
+                array[i++] = matrix[--r][++c];
+            }
+            //横右走一步，不可横右走时竖下走一步
+            if (i &lt; count &amp;&amp; c + 1 &lt; matrix[0].length) {
+                array[i++] = matrix[r][++c];
+            } else if (i &lt; count &amp;&amp; r + 1 &lt; matrix.length) {
+                array[i++] = matrix[++r][c];
+            }
+            //斜下走到底
+            while(i &lt; count &amp;&amp; r + 1 &lt; matrix.length &amp;&amp; c - 1 &gt;= 0) {
+                array[i++] = matrix[++r][--c];
+            }
+            //竖下走一步，不可竖下走时横右走一步
+            if (i &lt; count &amp;&amp; r + 1 &lt; matrix.length) {
+                array[i++] = matrix[++r][c];
+            } else if (i &lt; count &amp;&amp; c + 1 &lt; matrix[0].length) {
+                array[i++] = matrix[r][++c];
+            }
+        }
+        return array;
     }
-    
-    return backup.next;
 }
 </code></pre>
 
-
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+<pre><code class="language-python"># python
+class Solution:
+    # @param: a matrix of integers
+    # @return: a list of integers
+    def printZMatrix(self, matrix):
+        i = 0
+        j = 0
+        m = len(matrix)
+        n = len(matrix[0])
+        ret = []
+
+        up = True
+        for _ in xrange(m*n):
+            ret.append(matrix[i][j])
+            if up:
+                if i-1&lt;0 or j+1&gt;=n:
+                    up = False
+                    if j+1&gt;=n:  # go down
+                        i += 1
+                    else:  # go right
+                        j += 1
+                else:
+                    i -= 1
+                    j += 1
+            else:
+                if i+1&gt;=m or j-1&lt;0:
+                    up = True
+                    if i+1&gt;=m:
+                        j += 1  # go right
+                    else:
+                        i += 1  # go up
+                else:
+                    i += 1
+                    j -= 1
+
+        return ret
+
+</code></pre>
+
+
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595473642.html"  title="Previous Post: 最大间隔问题">&laquo; 最大间隔问题</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595473349.html" 
+	        title="Next Post: Majority Element">Majority Element &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595473495.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Implement strStr() - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,100 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Implement strStr()</h1>
 
+<p>Returns the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
-
-		<p>出处</p>
-
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>让你判断，needle是不是haystack的子串，是的话就返回这个子串</p>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<p>简单粗暴的办法</p>
 
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
-
-<h2 id="toc_1">Complexity</h2>
-
-<p>时间复杂度 O(n)</p>
-
-<h2 id="toc_2">Code</h2>
-
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">public class Solution {
+    public int strStr(String haystack, String needle) {
+        for (int i = 0; ; i++) {
+            for (int j = 0; ; j++) {
+                if (j == needle.length()) return i;
+                if (i + j == haystack.length()) return -1;
+                if (needle.charAt(j) != haystack.charAt(i + j)) break;
+                
+            } 
+        }
     }
-    
-    return backup.next;
+}
+</code></pre>
+
+<p>KMP 算法在面试的时候不大可能当场写对，所以考虑用 BM 算法 <a href="http://www-igm.univ-mlv.fr/%7Elecroq/string/node14.html#SECTION00140">http://www-igm.univ-mlv.fr/~lecroq/string/node14.html#SECTION00140</a></p>
+
+<pre><code class="language-java">public class Solution {
+    public int strStr(String haystack, String needle) {
+        int hlen = haystack.length();
+        int nlen = needle.length();
+        int[] jump = new int[256];  // hashmap char-&gt; index, assume ASCII
+        for(int i=0; i&lt;jump.length; i++) {
+            jump[i]=-1;
+        }
+        for(int i=0; i&lt;nlen; i++) {
+            jump[needle.charAt(i)] = i; // index of last occurrence
+        }
+        int skip=0;
+        for(int i=0; i&lt;hlen-nlen+1; i+=skip) { // !!! not i&lt;hlen 
+            skip=0;
+            for(int j=nlen-1; j&gt;=0; j--) {
+                if(haystack.charAt(i+j)!=needle.charAt(j)) {
+                    skip =Math.max( 1, j-jump[haystack.charAt(i+j)] );    
+                    // max is j+1, min is 1 (do not allow &lt;0);
+                    break;
+                }
+            }
+            if(skip==0) return i;
+        }
+        return -1;
+    }
 }
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595480877.html"  title="Previous Post: Submatrix Sum Zero">&laquo; Submatrix Sum Zero</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595480445.html" 
+	        title="Next Post: String Compression">String Compression &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595480652.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

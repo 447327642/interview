@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Repeated DNA Sequences - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,103 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Repeated DNA Sequences</h1>
 
+<p>All DNA is composed of a series of nucleotides abbreviated as A, C, G, and T, for example: <q>ACGAATTCCG</q>. When studying DNA, it is sometimes useful to identify repeated sequences within the DNA.</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>Write a function to find all the 10-letter-long sequences (substrings) that occur more than once in a DNA molecule.</p>
 
-		<p>出处</p>
+<p>For example,</p>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>Given s = <q>AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT</q>,</p>
+
+<p>Return:</p>
+
+<p>[<q>AAAAACCCCC</q>, <q>CCCCCAAAAA</q>].</p>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
-
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
-
-<h2 id="toc_1">Complexity</h2>
-
-<p>时间复杂度 O(n)</p>
-
-<h2 id="toc_2">Code</h2>
-
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">public class Solution {
+    public List&lt;String&gt; findRepeatedDnaSequences(String s) {
+        HashMap&lt;Integer,Integer&gt; map = new HashMap&lt;Integer,Integer&gt;();
+        HashMap&lt;Character,Integer&gt; mole = new HashMap&lt;Character,Integer&gt;();
+        mole.put(&#39;A&#39;,0); mole.put(&#39;C&#39;,1); mole.put(&#39;G&#39;,2); mole.put(&#39;T&#39;,3);
+        List&lt;String&gt; res = new ArrayList&lt;String&gt;();
+        if (s.length() &lt; 11) return res;
+        int x = 0, i = 0, mask = (1&lt;&lt;20) - 1;
+        for (; i &lt; 10; ++i) {
+            x = (x &lt;&lt; 2) | mole.get(s.charAt(i));
+        }
+        map.put(x, 1);
+        for (; i &lt; s.length(); ++i) {
+            x = (x&lt;&lt;2)|mole.get(s.charAt(i));
+            x = x &amp; mask;
+            if (map.containsKey(x)) {
+                if (map.get(x) == 1) {
+                    res.add(convert2Str(x));
+                    map.put(x,-1);
+                }
+            } else {
+                map.put(x,1);
+            }
+        }
+        return res;
     }
-    
-    return backup.next;
+    public String convert2Str(int x) {
+        String res = new String();
+        for (int i = 0; i &lt; 10; ++i) {
+            int k = x &amp; 3;
+            if (k == 0) res = &#39;A&#39; + res;
+            if (k == 1) res = &#39;C&#39; + res;
+            if (k == 2) res = &#39;G&#39; + res;
+            if (k == 3) res = &#39;T&#39; + res;
+            x = x &gt;&gt; 2;
+        }
+        return res;
+    }
 }
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595477503.html"  title="Previous Post: Reverse Integer">&laquo; Reverse Integer</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595477117.html" 
+	        title="Next Post: Reorder String by Case">Reorder String by Case &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595477318.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Merge Two Sorted Array - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,125 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Merge Two Sorted Array</h1>
 
+<p>合并两个排序的整数数组A和B变成一个新的数组。</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>样例</p>
 
-		<p>出处</p>
+<pre><code>给出A=[1,2,3,4]，B=[2,4,5,6]，返回 [1,2,2,3,4,4,5,6]
+</code></pre>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>挑战</p>
+
+<pre><code>你能否优化你的算法，如果其中一个数组很大而另一个数组很小？
+</code></pre>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<p>自尾部向首部逐个比较两个数组内的元素，取较大的置于新数组尾部元素中。用 python 的话可以非常简单粗暴，直接正着弄就行，注意数组长度的差异可能导致的越界。</p>
 
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<p>如果一个特别大一个特别小，就要考虑二分来进行插入了</p>
 
 <h2 id="toc_1">Complexity</h2>
 
-<p>时间复杂度 O(n)</p>
+<p>时间复杂度 O(n)，空间复杂度 O(n)</p>
 
-<h2 id="toc_2">Code</h2>
+<h2 id="toc_2">Coding</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-python"># python
+class Solution:
+    #@param A and B: sorted integer array A and B.
+    #@return: A new sorted integer array
+    def mergeSortedArray(self, A, B):
+        # write your code here
+        ai = 0
+        bi = 0
+        c = []
+        for i in range(len(A)+len(B)):
+            if ai &lt; len(A) and bi &lt; len(B):
+                if A[ai] &lt; B[bi]:
+                    c.append(A[ai])
+                    ai = ai + 1
+                else:
+                    c.append(B[bi])
+                    bi = bi + 1
+            elif ai &lt; len(A) and bi &gt;= len(B):
+                c.append(A[ai])
+                ai = ai + 1
+            elif ai &gt;= len(A) and bi &lt; len(B):
+                c.append(B[bi])
+                bi = bi + 1
+        return c
+</code></pre>
+
+<pre><code class="language-java">// java
+class Solution {
+    /**
+     * @param A: sorted integer array A which has m elements, 
+     *           but size of A is m+n
+     * @param B: sorted integer array B which has n elements
+     * @return: void
+     */
+    public void mergeSortedArray(int[] A, int m, int[] B, int n) {
+        int i = m-1, j = n-1, index = m + n - 1;
+        while (i &gt;= 0 &amp;&amp; j &gt;= 0) {
+            if (A[i] &gt; B[j]) {
+                A[index--] = A[i--];
+            } else {
+                A[index--] = B[j--];
+            }
+        }
+        while (i &gt;= 0) {
+            A[index--] = A[i--];
+        }
+        while (j &gt;= 0) {
+            A[index--] = B[j--];
+        }
     }
-    
-    return backup.next;
 }
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595474431.html"  title="Previous Post: Min Difference 2 Array">&laquo; Min Difference 2 Array</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595474103.html" 
+	        title="Next Post: Sorted Two Sorted Array II">Sorted Two Sorted Array II &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595474265.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

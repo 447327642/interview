@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Check Valid Sudoku - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,124 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Check Valid Sudoku</h1>
 
+<p>请判定一个数独是否有效。</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>该数独可能只填充了部分数字，其中缺少的数字用 . 表示。</p>
 
-		<p>出处</p>
+<p>注意</p>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<pre><code>一个合法的数独（仅部分填充）并不一定是可解的。我们仅需使填充的空格有效即可。
+</code></pre>
+
+<p>说明 什么是数独？</p>
+
+<ul>
+<li><a href="http://sudoku.com.au/TheRules.aspx">英文版</a></li>
+<li><a href="http://baike.baidu.com/subview/961/10842669.htm">中文版</a></li>
+</ul>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
-
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<p>按照题意进行检测即可</p>
 
 <h2 id="toc_1">Complexity</h2>
 
-<p>时间复杂度 O(n)</p>
+<p>时间复杂度 O(n<sup>2</sup> )，空间复杂度 O(n)</p>
 
 <h2 id="toc_2">Code</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">class Solution {
+    /**
+      * @param board: the board
+        @return: wether the Sudoku is valid
+      */
+    public boolean isValidSudoku(char[][] board) {
+        if(board == null || board.length == 0 || board[0].length == 0) return false;
+
+        int m = 9, n = 9;
+        // check row
+        boolean[] visited = new boolean[9];
+        for(int i = 0; i &lt; m; i++){
+            Arrays.fill(visited, false);
+            for(int j = 0; j &lt; n; j++){
+                if(!precess(visited, board[i][j])) return false;
+            }
+        }
+
+        for(int i = 0; i &lt; n; i++){
+            Arrays.fill(visited, false);
+            for(int j = 0; j &lt; m; j++){
+                if(!precess(visited, board[j][i])) return false;
+            }
+        }
+
+        for(int i = 0; i &lt; m; i+=3){
+
+          for(int j = 0; j &lt; n; j+=3){
+              Arrays.fill(visited, false);
+              for(int k = 0; k &lt; 9; k++){
+                  if(!precess(visited, board[i+k/3][j+k%3])) return false;
+              }
+
+            }
+        }
+        return true;
+
     }
-    
-    return backup.next;
-}
+
+    private boolean precess(boolean[] visited, char c){
+        if(c == &#39;.&#39;) return true;
+        int num = c - &#39;0&#39;;
+        if(num &gt; 9 || num &lt; 1 || visited[num-1]) return false;
+        visited[num-1] = true;
+        return true;
+    }
+};
+
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595470276.html"  title="Previous Post: Compare Version Numbers">&laquo; Compare Version Numbers</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595470088.html" 
+	        title="Next Post: Check Valid Number">Check Valid Number &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595470188.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

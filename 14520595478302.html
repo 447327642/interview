@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Rotate Image - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,156 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Rotate Image</h1>
 
+<p>You are given an n x n 2D matrix representing an image.</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>Rotate the image by 90 degrees (clockwise).</p>
 
-		<p>出处</p>
+<p>Follow up:</p>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>Could you do this in-place?</p>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<p>Method 1</p>
 
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
+<pre><code>123   -&gt;  147   -&gt;   741    (preferable)
+456       258        852
+789       369        963
+</code></pre>
 
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<p>Method 2</p>
+
+<p>Rotate one-fourth of the image clockwise.</p>
 
 <h2 id="toc_1">Complexity</h2>
 
-<p>时间复杂度 O(n)</p>
+<p>时间复杂度 O(n<sup>2</sup> )，空间复杂度 O(1)</p>
 
 <h2 id="toc_2">Code</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">public class Solution {
+    public void rotate_1(int[][] matrix) {
+        int n = matrix.length;
+        if (n &lt;= 1) return;
+        for(int i=0;i&lt;n;i++){
+            for(int j=0;j&lt;i;j++){
+                int tmp = matrix[i][j];
+                matrix[i][j]=matrix[j][i];
+                matrix[j][i]=tmp;
+            }
+        }
+        
+        for(int i=0;i&lt;n;i++){
+            for(int j=0;j&lt;n/2;j++){
+                int tmp = matrix[i][j];
+                matrix[i][j]=matrix[i][n-1-j];
+                matrix[i][n-1-j] = tmp;
+            }
+        }
     }
-    
-    return backup.next;
+    public void rotate_2(int[][] matrix) {
+        int n = matrix.length;
+        if (n &lt;= 1) return;
+        int level = 0;
+        while (level &lt; n / 2) {
+            for (int i = level; i &lt; n - 1 - level; ++i) {
+                int tmp = matrix[i][level];
+                matrix[i][level] = matrix[n - 1 - level][i];
+                matrix[n - 1 - level][i] = matrix[n - 1 - i][n - 1 - level];
+                matrix[n - 1 - i][n - 1 - level] = matrix[level][n - 1 - i];
+                matrix[level][n - 1 - i] = tmp;
+            }
+            ++level;
+        }
+    }
+}
+</code></pre>
+
+<hr/>
+
+<pre><code class="language-java">public static void rotate(int[][] mat, int n){
+    for (int layer = 0; layer &lt; n/2; layer++){
+        int first = layer;
+        int last = n - 1 - layer;
+        for (int i = first; i &lt; last; i++){
+            int offset = i - first;
+            // save top
+            int top = matrix[first][i];
+            // left -&gt; top
+            matrix[first][i] = matrix[last-offset][first];
+            // bottom -&gt; left
+            matrix[last-offset][first] = matrix[last][last-offset];
+            // right -&gt; bottom
+            matrix[last][last-offset] = matrix[i][last];
+            // top -&gt; right
+            matrix[i][last] = top;
+        }
+    }
+}
+
+public static void rotateinv(int[][] mat, int n){
+    for (int layer = 0; layer &lt; n/2; layer++){
+        int first = layer;
+        int last = n - 1 - layer;
+        for (int i = first; i &lt; last; i++){
+            int offset = i - first;
+            // save top
+            int top = matrix1[first][i];
+            // right -&gt; top
+            matrix1[first][i] = matrix1[i][last];
+            // bottom -&gt; right
+            matrix1[i][last] = matrix1[last][last-offset];
+            // left -&gt; bottom
+            matrix1[last][last-offset] = matrix1[last - offset][first];
+            // top -&gt; right
+            matrix1[last-offset][first] = top;
+        }
+    }
 }
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520595478523.html"  title="Previous Post: Rotate String">&laquo; Rotate String</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595478107.html" 
+	        title="Next Post: Rotate Array">Rotate Array &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520595478302.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

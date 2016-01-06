@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  链表 - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,187 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>链表</h1>
 
+<p>链表(linked list)是一种常见的线性数据结构。对于单向链表(singly linked list)，每个节点有一个next指针指向后一个节点，还有一个成员变量用以存储数值；对于双向链表(doubly Linked List)，还有一个prev指针指向前一个节点。与数组类似，搜索链表需要O(n)的时间复杂度，但是链表不能通过常数时间(O(1))读取第k个数据。链表的优势在于能够以较高的效率在任意位置插入或删除一个节点。</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<h2 id="toc_0">解题策略</h2>
 
-		<p>出处</p>
+<ul>
+<li>当涉及对头节点的操作，我们不妨考虑创建哑节点。</li>
+<li>由于题目涉及在链表中寻找特定位置，我们用两个指针变量以不同的速度遍历该链表。</li>
+<li>循环遍历链表, 每次只处理当前指针的next 变量，由此实现链表的逆转。</li>
+</ul>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<h2 id="toc_1">链表的基本操作</h2>
 
-<h2 id="toc_0">Solution</h2>
-
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<p>凡是修改单向链表的操作，只需考虑：</p>
 
 <ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
+<li>哪个节点的next指针会受到影响，则需要修正该指针；</li>
+<li>如果待删除节点是动态开辟的内存空间，则需要释放这部分空间(C/C++)</li>
 </ol>
 
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<p>毕竟，一个链表节点，无非是包含value和next这两个成员变量的数据结构而已。对于双向链表，类似的，则只需额外考虑谁的prev指针会受到影响。</p>
 
-<h2 id="toc_1">Complexity</h2>
+<p>举例如下：</p>
 
-<p>时间复杂度 O(n)</p>
-
-<h2 id="toc_2">Code</h2>
-
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
-    }
-    
-    return backup.next;
+<pre><code>void delNode(ListNode *prev) {
+  ListNode *curr = prev-&gt;next;
+  // 删除curr节点只会使prev节点的next受到影响
+  prev-&gt;next = curr-&gt;next;    
+  delete curr;    // 清理trash指针
 }
 </code></pre>
 
+<p>注：操作链表时务必注意边界条件：curr == head, curr == tail 或者 curr == NULL</p>
 
-		</div>
-	
+<ul>
+<li><strong>两种存储方式</strong>
 
- 
-	
+<ul>
+<li>顺序存储结构：随机读取，访问时是 O(1)</li>
+<li>链式存储结构：插入和删除 O(1)，访问时最坏是 O(n)</li>
+</ul></li>
+<li>分类（根据指针域）
 
- 
-	
+<ul>
+<li>单向链表</li>
+<li>双向链表</li>
+<li>循环链表</li>
+</ul></li>
+</ul>
 
- 
-	
+<h2 id="toc_2">反转链表</h2>
 
- 
-	
+<ul>
+<li>访问某个节点 <code>curt.next</code> 时，要检验 <code>curt</code> 是否为 <code>null</code></li>
+<li>要把反转后的最后一个节点（即第一个节点）指向 <code>null</code></li>
+</ul>
 
- 
-	
+<h2 id="toc_3">删除某个节点</h2>
 
- 
-	
+<ul>
+<li>由于需要知道前继节点的信息，而前继节点可能会导致表头产生变化，所以需要一些技巧 <code>Dummy Node</code></li>
+<li>链表指针的鲁棒性
+
+<ul>
+<li>访问某个节点 <code>curt.next</code> 时，要检验 <code>curt</code> 是否为 <code>null</code></li>
+<li>全部操作结束后，判断是否有环；若有，则置其中一端为 <code>null</code></li>
+</ul></li>
+</ul>
 
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+<h2 id="toc_4">Dummy Node</h2>
+
+<ul>
+<li>是一个虚拟节点 <code>dummy.next = head</code></li>
+<li>针对单向链表没有前向指针的问题，保证链表的 <code>head</code> 不会在删除操作中丢失</li>
+<li>也可以用来进行 <code>head</code> 节点（但比较少见）</li>
+<li>当链表的 <code>head</code> 可能有变化时，使用 dummy node 可以简化代码，最后返回 <code>dummy.next</code> 即可</li>
+</ul>
+
+<h2 id="toc_5">快慢指针</h2>
+
+<ul>
+<li>快慢指的是指针向前移动的步长，一般来说，快指针每次移动 2，慢指针每次移动 1</li>
+<li>主要有两个应用
+
+<ul>
+<li><strong>快速找出未知长度单链表的中间节点</strong>
+
+<ul>
+<li>设置两个指针 <code>*fast</code> 和 <code>*slow</code> 都指向头节点</li>
+<li><code>*fast</code> 移动速度是 <code>*slow</code> 的两倍</li>
+<li><code>*fast</code> 指向末尾节点时，<code>*slow</code> 正好就在中间</li>
+</ul></li>
+<li><strong>判断单链表是否有环</strong>
+
+<ul>
+<li>设置两个指针 <code>*fast</code> 和 <code>*slow</code> 都指向头节点</li>
+<li><code>*fast</code> 移动速度是 <code>*slow</code> 的两倍</li>
+<li>如果 <code>*fast == null</code> 说明该单链表不是循环链表</li>
+<li>如果 <code>*fast == *slow</code> 说明该链表是循环链表</li>
+</ul></li>
+</ul></li>
+<li>其他应用
+
+<ul>
+<li><strong>找倒数第 N 个节点</strong>
+
+<ul>
+<li>设置两个指针 <code>*fast</code> 和 <code>*slow</code> 都指向头节点</li>
+<li><code>*fast</code> 先移动 N 步，然后两个指针一起前进</li>
+<li><code>*fast</code> 到达末尾时，<code>*slow</code> 即为倒数第 N 个节点</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<h2 id="toc_6">工具箱</h2>
+
+<p>“对于利用链表解决问题，而非解构链表的问题，可以考虑使用标准库。</p>
+
+<p>对C++，</p>
+
+<p>双链表(Doubly linked list)的实现类是<code>std::list&lt;T&gt;</code>.</p>
+
+<p>常用<code>iterator： begin(), end(), rbegin(), rend()</code>.</p>
+
+<p>常用函数:</p>
+
+<pre><code>empty(), size(), push_back(T value), pop_back(T value);
+erase(iterator pos), insert(iterator pos, T value);
+</code></pre>
+
+<p>对于Java,</p>
+
+<p>双链表的实现类是 <code>LinkedList&lt;E&gt;</code></p>
+
+<p>常用函数：</p>
+
+<pre><code>add(E e), add(int index, E element), remove(int index),
+addAll(Collection&lt;? Extends E&gt; c),  get(int index),
+</code></pre>
+
+
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520596872694.html"  title="Previous Post: 数学逻辑">&laquo; 数学逻辑</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520596469127.html" 
+	        title="Next Post: Swap Bits">Swap Bits &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520596803958.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

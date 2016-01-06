@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  A Plus B - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,126 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>A Plus B</h1>
 
+<p>出处</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
+<p>给出两个整数a和b, 求他们的和, 但不能使用 + 等数学运算符</p>
 
-		<p>出处</p>
+<p>样例</p>
 
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<pre><code>如果 a=1 并且 b=2，返回3
+</code></pre>
+
+<p>注意</p>
+
+<pre><code>你不需要从输入流读入数据，只需要根据aplusb的两个参数a和b，计算他们的和并返回就行。
+</code></pre>
+
+<p>挑战</p>
+
+<pre><code>显然你可以直接 return a + b，但是你是否可以挑战一下不这样做？
+</code></pre>
+
+<p>说明</p>
+
+<pre><code>a和b都是 32位 整数么？是的
+我可以使用位运算符么？当然可以
+</code></pre>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
+<p>位运算实现整数加法本质就是用二进制进行运算。<br/>
+其主要用了两个基本表达式：</p>
 
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
+<ul>
+<li><code>x^y</code> //执行加法，不考虑进位。</li>
+<li><code>(x&amp;y)&lt;&lt;1</code> //进位操作</li>
+</ul>
 
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<p>令 <code>x=x^y; y=(x&amp;y)&lt;&lt;1</code> 进行迭代，每迭代一次进位操作右面就多一位 0，最多需要“加数二进制位长度”次迭代就没有进位了，此时<code>x^y</code>的值就是结果。</p>
+
+<p>我们来做个3位数的加法：</p>
+
+<p>101+011=1000 //正常加法</p>
+
+<p>位运算加法：</p>
+
+<pre><code>（1） 101 ^ 011 = 110
+(101 &amp; 011)&lt;&lt;1 = 010
+（2） 110 ^ 010 = 100
+(110 &amp; 010)&lt;&lt;1 = 100
+（3） 100 ^ 100 = 000
+(100 &amp; 100)&lt;&lt;1 = 1000
+</code></pre>
+
+<p>此时进行相加操作就没有进位了，即000 ^ 1000=1000即是最后结果。</p>
 
 <h2 id="toc_1">Complexity</h2>
 
-<p>时间复杂度 O(n)</p>
+<p>时间复杂度 O(n)，空间复杂度 O(1)</p>
 
 <h2 id="toc_2">Code</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">class Solution {
+    /*
+     * param a: The first integer
+     * param b: The second integer
+     * return: The sum of a and b
+     */
+    public int aplusb(int a, int b) {
+        // write your code here, try to do it without arithmetic operators.
+        while(b != 0){
+            int carry = a &amp; b;
+            a = a ^ b;
+            b = carry &lt;&lt; 1;
+        }
+        return a;
     }
-    
-    return backup.next;
-}
+};
+
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520596468456.html"  title="Previous Post: Bitwise AND of Numbers Range">&laquo; Bitwise AND of Numbers Range</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520595848890.html" 
+	        title="Next Post: 位操作">位操作 &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520596468418.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 

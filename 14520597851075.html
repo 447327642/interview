@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  小土刀的面试刷题笔记
+  Merge K Linked List - 小土刀的面试刷题笔记
   
   </title>
  <meta name="description" content="">
@@ -661,472 +661,119 @@
             </div>
             <div class="large-9 medium-9 columns">
 
- 
+ <div class="markdown-body">
+<h1>Merge K Linked List</h1>
 
+<p>出处</p>
 
-	
-		<div class="markdown-body">
-		<h1>Swap Adjacent Node</h1>
-
-		<p>出处</p>
-
-<p>Given a linked list, swap every two adjacent nodes and return its head</p>
+<p>Merge k sorted linked lists to be one sorted list.</p>
 
 <h2 id="toc_0">Solution</h2>
 
-<p>如果需要交换两个节点的位置，则对这两个节点的前驱节点，它们的next指针会受到影响；这两个节点本身的next指针，也会受到影响。但是，如下过程总是可以实现交换：</p>
-
-<ol>
-<li>先交换两个前驱节点的next指针的值；</li>
-<li>再交换这两个节点的next指针的值。</li>
-</ol>
-
-<p>无论这两个节点的相对位置和绝对位置如何，以上的处理方式总是成立。</p>
+<p>可以将k个sorted list想象成k个有序数据流，互相竞争插入到结果序列， 因此可以考虑使用一个最小值堆维护动态数据：将每个队头的元素加入一个堆，然后从堆中依次弹出最小数据。如果数据属于第i个list，则该list补充一个元素到堆。重复上述过程直到所有元素排序完成。事实上，该算法就是外排序算法的一个具体实现，区别仅仅在于这里略去了文件的读写操作。</p>
 
 <h2 id="toc_1">Complexity</h2>
 
-<p>时间复杂度 O(n)</p>
+<p>时间上，我们需要维护一个大小为k的最小值堆，每次维护复杂度O(logk)，由于一共有n个数据，每个数据都会加入最小值堆，故总体时间复杂度O(nlogk)。由于每个list至少有一个数据，故n一定大于等于k。相比于完全无序的n个数据排序(所需时间O(nlogn))，我们的算法将复杂度降至O(nlogk)。原因在于数据是部分有序的。事实上，在通常面试中，如果数据已经部分有序，我们理应能够实现时间复杂度优于O(nlogn)的算法。</p>
+
+<p>空间上，我们需要大小为k的最小值堆。同时，在不允许破坏原有链表的情况下，我们需要额外O(n)的空间构建新链表，故总体空间复杂度O(n+k)。如果可以直接修改原有数据的next指针，则总体空间复杂度即为O(k)。至于是否能够破坏原始数据，需要与面试官进行沟通。</p>
 
 <h2 id="toc_2">Code</h2>
 
-<pre><code class="language-java">Node swapNodes(Node head){
-    if (head == null) return null;
-    
-    Node dummy = new Node(-1);
-    Node backup = dummy;
-    while (head != null &amp;&amp; head.next != null){
-        Node next = head.next;
-        dummy.next = next;
-        head.next = next.next;
-        next.next = head;
-        dummy = head;
-        head = head.next;
+<pre><code class="language-java">//  Definition for singly-linked list.
+class ListNode {
+    int val;
+    ListNode next;
+ 
+    ListNode(int x) {
+        val = x;
+        next = null;
     }
-    
-    return backup.next;
+}
+ 
+public class Solution {
+    public ListNode mergeKLists(ArrayList&lt;ListNode&gt; lists) {
+        if (lists.size() == 0)
+            return null;
+ 
+        //PriorityQueue is a sorted queue
+        PriorityQueue&lt;ListNode&gt; q = new PriorityQueue&lt;ListNode&gt;(lists.size(),
+                new Comparator&lt;ListNode&gt;() {
+                    public int compare(ListNode a, ListNode b) {
+                        if (a.val &gt; b.val)
+                            return 1;
+                        else if(a.val == b.val)
+                            return 0;
+                        else 
+                            return -1;
+                    }
+                });
+ 
+        //add first node of each list to the queue
+        for (ListNode list : lists) {
+            if (list != null)
+                q.add(list);
+        }
+ 
+        ListNode head = new ListNode(0);
+        ListNode p = head; // serve as a pointer/cursor
+ 
+        while (q.size() &gt; 0) {
+            ListNode temp = q.poll();
+            //poll() retrieves and removes the head of the queue - q. 
+            p.next = temp;
+ 
+            //keep adding next element of each list
+            if (temp.next != null)
+                q.add(temp.next);
+ 
+            p = p.next;
+        }
+ 
+        return head.next;
+    }
 }
 </code></pre>
 
 
-		</div>
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
- 
-	
-
-  
-  
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="14520597851346.html"  title="Previous Post: Merge Two Lists">&laquo; Merge Two Lists</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="14520597851031.html" 
+	        title="Next Post: Kth to Last">Kth to Last &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '14520597851075.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 
